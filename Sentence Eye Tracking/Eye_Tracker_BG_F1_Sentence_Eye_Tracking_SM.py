@@ -5,7 +5,7 @@ import os, sys, time, random, math, csv
 import string
 
 date = time.strftime("%m_%d")
-expName = 'ScrotationMain [RUN ME]'
+expName = 'F1_Sentence_Eye_Tracking_SM'
 expInfo = {'Subject Name': ''}
 
 dlg = gui.DlgFromDict(dictionary=expInfo, sortKeys=False, title=expName)
