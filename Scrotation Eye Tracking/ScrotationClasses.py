@@ -43,7 +43,7 @@ class RotationProtocol (TVStimuli):
         pass;
     
     def initFile(self):
-        self.csvOutput(["Correct Response","Rotation (deg)", "Reaction Time (ms)", "Target"])
+        self.csvOutput(["Correct Response","Rotation (deg)", "Reaction Time (ms)", "Target", "Face Start Time (CPU Uptime)"])
         
     def demoSequence(self, rotations, demoMessage):
         self.genDisplay(demoMessage, 0, 8)
@@ -101,14 +101,12 @@ class ScalingProtocol(TVStimuli):
         self.showWait()
     
     def initFile(self):
-        self.csvOutput(["Correct Response","Height (deg)", "Reaction Time (ms)", "Target"])
+        self.csvOutput(["Correct Response","Height (deg)", "Reaction Time (ms)", "Target", "Face Start Time (CPU Uptime)"])
     
     def showImage(self, set, showTarget, size):
         self.displayImage.image = self.getImage(set, showTarget)
-        faceWidth = self.angleCalc(size) * float(self.tvInfo['faceWidth']) * 0.75
-        faceHeight = self.angleCalc(size) * float(self.tvInfo['faceHeight']) * 0.75
-        ##Added scalar of 0.75 to change participant seating distance from 140cm to 105cm
-        ####This needs to be done to merge with eye tracker; 140cm is too far for it to register eyes
+        faceWidth = self.angleCalc(size) * float(self.tvInfo['faceWidth'])
+        faceHeight = self.angleCalc(size) * float(self.tvInfo['faceHeight'])
         self.displayImage.size = (faceWidth, faceHeight)
         self.displayImage.draw()
     

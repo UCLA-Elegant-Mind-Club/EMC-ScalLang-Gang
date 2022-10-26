@@ -7,6 +7,13 @@ import numpy as np
 import os, time, random, math, csv, re, uuid
 from abc import ABC, abstractmethod
 
+import ctypes
+lib = ctypes.windll.kernel32
+
+def upTime():
+    t = lib.GetTickCount64()
+    return t
+
 textZoom = 1.25
 
 class TVStimuli(ABC):
@@ -248,6 +255,7 @@ class TVStimuli(ABC):
         self.showImage(set, target, testValue)
         result = {'start': 0, 'end': 0}
         self.win.timeOnFlip(result, 'start')
+        fliptime = upTime()
         self.win.flip()
         
         keys = event.waitKeys(timeStamped = True, maxWait = self.timeOut + float(self.tvInfo['timeDelay'])/1000)
@@ -268,7 +276,7 @@ class TVStimuli(ABC):
             self.feedback(-1, scoreChange = (not practice) * -400)
         else:
             self.feedback(False, scoreChange = (not practice) * -min(reactionTime, 800)/2)
-        return [(response == correctKey) * 1, testValue, reactionTime, set * 3 + target]
+        return [(response == correctKey) * 1, testValue, reactionTime, set * 3 + target, fliptime]
     
     def feedback(self, correct: bool or int, scoreChange: float = 0):
         rightMessage = random.sample(['Correct!'], 1)[0]
