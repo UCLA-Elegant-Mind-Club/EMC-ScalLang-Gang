@@ -224,7 +224,13 @@ class TVStimuli(ABC):
             self.genDisplay('memorize the ' + self.stimType + ' on the next slide (mapped to ' + mapping + ')', 0, 3 - yShift)
             self.genDisplay('Press \'' + mapping + '\' to continue.', 0, -3)
             self.showWait(keys = [mapping])
+            self.showCross(1, 1)
+            self.showWait(0.5)
+            ##Added cross before memorization faces
             self.showImage(set, target, self.refValue)
+            csvOutput([420.69, self.refValue, self.trainingTime, set * 3 + target + 1, upTime])
+            ##Including learning trials in output CSV (denoted by "Correct Response" = 420.69)
+            ##10/26/2022: "Target" value changed from a range of 0-8 to 1-9. Now Target value directly corresponds to face number
             self.showWait(self.trainingTime)
             self.genDisplay('Press \'' + mapping + '\' to continue.', 0, 0)
             self.showWait(keys = [mapping])
@@ -276,7 +282,8 @@ class TVStimuli(ABC):
             self.feedback(-1, scoreChange = (not practice) * -400)
         else:
             self.feedback(False, scoreChange = (not practice) * -min(reactionTime, 800)/2)
-        return [(response == correctKey) * 1, testValue, reactionTime, set * 3 + target, fliptime]
+        return [(response == correctKey) * 1, testValue, reactionTime, set * 3 + target + 1, fliptime]
+        ##See comment on line 230
     
     def feedback(self, correct: bool or int, scoreChange: float = 0):
         rightMessage = random.sample(['Correct!'], 1)[0]
