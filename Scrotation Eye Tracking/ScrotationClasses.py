@@ -2,7 +2,7 @@ from psychopy import gui, core, prefs
 from psychopy.sound import Sound
 prefs.hardware['audioLib'] = ['ptb', 'pyo']
 import os, time, random, math
-from TVStimuli import TVStimuli
+from TVStimuli import *
 
 ##### Parent Rotation and Scaling Classes #####
 ##### Parent Rotation and Scaling Classes #####
@@ -158,7 +158,13 @@ class FamousFaces (TVStimuli):
         self.genDisplay('memorize ' + self.names[set * 3 + target] + '\'s face on the next slide (mapped to ' + mapping + ')', 0, 3 - yShift)
         self.genDisplay('Press \'' + mapping + '\' to continue.', 0, -3)
         self.showWait(keys = [mapping])
+        self.showCross(0.2, 0.75)
+        self.showWait(0.2)
+        ##Added cross before memorization faces
         self.showImage(set, target, self.refValue)
+        self.csvOutput([420.69, self.refValue, self.trainingTime, set * 3 + target + 1, upTime()])
+        ##Including learning trials in output CSV (denoted by "Correct Response" = 420.69)
+        ##10/26/2022: "Target" value changed from a range of 0-8 to 1-9. Now Target value directly corresponds to face number
         self.showWait(self.trainingTime)
         self.genDisplay('Press \'' + mapping + '\' to continue.', 0, 0)
         self.showWait(keys = [mapping])
