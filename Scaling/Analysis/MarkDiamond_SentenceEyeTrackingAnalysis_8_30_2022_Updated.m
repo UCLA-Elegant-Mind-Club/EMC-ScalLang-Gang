@@ -18,6 +18,10 @@
 
 % 8/9/2022:
     % Added animated X-Y plot
+    
+% 8/30/2022
+    % Converted pixels to degrees eccentricity
+    % Fixed X-Y Plot sentence not showing up error
 
 close all; clear all; clc;
 %% Loading Data from Files
@@ -41,8 +45,12 @@ RTData = table2array(RTData); %Convert to array
 breakpoints = RTData(:,3); %finds specific timestamps where face appears
 maxReadingTime = round(max(RTData(:,2))*1000); % In Milliseconds, rounded to whole
 rawEyeTracking_Time = rawEyeTrackingData(:,1);
+
 rawEyeTracking_X = rawEyeTrackingData(:,2);
+rawEyeTracking_X = (0.015625.*rawEyeTracking_X)-30; % Pixels to degrees conversion
+
 rawEyeTracking_Y = rawEyeTrackingData(:,3);
+rawEyeTracking_Y = (-0.016145438106463.*rawEyeTracking_Y)+17.4372346093611; % Pixels to degrees conversion
 
 A = repmat(rawEyeTracking_Time, [1, height(breakpoints)]);
 [minValue, closestIndex] = min(abs(A-breakpoints'));
@@ -59,15 +67,8 @@ figure(1)
 % X-Y Plot Overlay
 figure(2)
 img = imread('Face9.png');
-imshow(img);
-
-% X-Y Animated Plot Overlay
-figure(4)
-imshow(img)
-
-v = VideoWriter("X-Y Plot Animated.mp4", "MPEG-4");
-v.FrameRate = 90; % Tobii Eye Tracker runs at 90 Hz
-v.open;
+imagesc([-30 30], [17.4372346093611 -17.4372346093611], img)
+axis equal
 
 for i = 1:length(closestIndex)
     EyeTracking_X(:,i) = rawEyeTracking_X(closestIndex(i):closestIndex(i)+1000);
@@ -85,47 +86,56 @@ for i = 1:length(closestIndex)
     xlabel("Time (s)")
     ylabel("Horizontal Distance (degrees)")
     xlim([0,maxReadingTime]) % Time, in s
-    ylim([0, 3840])
+    ylim([-30, 30])
     xticks([0,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000])
     xticklabels([0,1,2,3,4,5,6,7,8,9,10])
-    yticks([0,640,1280,1920,2560,3200,3840])
-    yticklabels([-30,-20,-10,0,10,20,30])
+    %yticks([0,640,1280,1920,2560,3200,3840])
+    yticks([-30,-20,-10,0,10,20,30])
     
 
     hold off
     figure(2)
     hold on
     % 150:max to cut off jumbled mess before the trial begins after cue
-    plot(EyeTracking_X(150:max(closestIndex2),i), EyeTracking_Y(150:max(closestIndex2),i), "LineWidth", 2, "Marker", '.', "MarkerSize", 20)
+    plot(EyeTracking_X(150:max(closestIndex2),i), EyeTracking_Y(150:max(closestIndex2),i), "LineWidth", 1, "Marker", '.', "MarkerSize", 10)
     title("X-Y Plot")
-    set(gca, 'YDir','reverse')
+    set(gca, 'YDir','normal')
     xlabel("Horizontal eccentricity (degrees)")
     ylabel("Vertical eccentricity (degrees)")
-    axis([0 3840 -158.75 2318.75]) % For X_Y Plot
-    xticks([0, 640, 1280, 1920, 2560, 3200, 3840])
-    xticklabels([-30,-20,-10,0,10,20,30])
-    yticks([-158.75,460.62,1080,1699.38, 2318.75])
-    yticklabels([-20,-10,0,10,20])
+    axis([-30 30 -20 20]) % For X_Y Plot
+    %xticks([0, 640, 1280, 1920, 2560, 3200, 3840])
+    xticks([-30,-20,-10,0,10,20,30])
+    %yticks([-158.75,460.62,1080,1699.38, 2318.75])
+    yticks([-20,-10,0,10,20])
     
 
     hold off
     figure(3)
     hold on
     plot(EyeTracking_Time(:,i), EyeTracking_Y(:,i))
-    set(gca, 'YDir','reverse')
+    %set(gca, 'YDir','reverse')
     title("Y-Time Plot")
     xlabel("Time (s)")
     ylabel("Vertical Distance (degrees)")
     xlim([0,maxReadingTime]) % Time, in s
-    ylim([-158.75, 2318.75])
+    ylim([-20, 20])
     xticks([0, 1000, 2000, 3000, 4000, 5000,6000,7000,8000,9000,10000])
     xticklabels([0, 1, 2, 3, 4, 5,6,7,8,9,10])
-    yticks([-158.75,460.62,1080,1699.38, 2318.75])
-    yticklabels([-20,-10,0,10,20])
+    %yticks([-158.75,460.62,1080,1699.38, 2318.75])
+    yticks([-20,-10,0,10,20])
+end
+    
+%% Video Plot (This takes a long time, don't run this section if you want to skip it)
 
-    
-    %% Video Plot (This takes a long time, don't run this section if you want to skip it)
-    
+% % X-Y Animated Plot Overlay
+figure(4)
+imshow(img)
+
+v = VideoWriter("X-Y Plot Animated.mp4", "MPEG-4");
+v.FrameRate = 90; % Tobii Eye Tracker runs at 90 Hz
+v.open;
+
+for i = 1:length(closestIndex)    
     hold off
     figure(4)
     hold on
@@ -155,4 +165,4 @@ saveas(1,"X-Time.png");
 saveas(2,"X-Y.png")
 saveas(3,"Y-Time.png")
 
-v.close;
+%v.close;
