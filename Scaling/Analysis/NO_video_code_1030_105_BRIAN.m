@@ -39,8 +39,8 @@ figure(1)
 
 % X-Y Plot Overlay
 figure(2)
-%img = imread('Face9.png');
-%imshow(img);
+img = imread('Face9.png');
+imshow(img);
 
 for i = 1:length(closestIndex)
     EyeTracking_X(:,i) = rawEyeTracking_X(closestIndex(i):closestIndex(i)+1000);
