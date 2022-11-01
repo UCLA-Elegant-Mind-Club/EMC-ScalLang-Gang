@@ -13,6 +13,10 @@ lib = ctypes.windll.kernel32
 def upTime():
     t = lib.GetTickCount64()
     return t
+    
+def UTCt():
+    t = time.time()
+    return t
 
 textZoom = 1.25
 
@@ -23,7 +27,7 @@ class TVStimuli(ABC):
     trialsPerSet = 32
     totalTrials = numSets * trialsPerSet
     
-    trainingTime = 20
+    trainingTime = 10
     trainingReps = 2
     
     crossSize = 4
@@ -228,7 +232,7 @@ class TVStimuli(ABC):
             self.showWait(0.2)
             ##Added cross before memorization faces
             self.showImage(set, target, self.refValue)
-            self.csvOutput([420.69, self.refValue, self.trainingTime, set * 3 + target + 1, upTime()])
+            self.csvOutput([420.69, self.refValue, self.trainingTime, set * 3 + target + 1, upTime(), UTCt()])
             ##Including learning trials in output CSV (denoted by "Correct Response" = 420.69)
             ##10/26/2022: "Target" value changed from a range of 0-8 to 1-9. Now Target value directly corresponds to face number
             self.showWait(self.trainingTime)
@@ -262,6 +266,7 @@ class TVStimuli(ABC):
         result = {'start': 0, 'end': 0}
         self.win.timeOnFlip(result, 'start')
         fliptime = upTime()
+        timestamp = UTCt()
         self.win.flip()
         
         keys = event.waitKeys(timeStamped = True, maxWait = self.timeOut + float(self.tvInfo['timeDelay'])/1000)
@@ -282,7 +287,7 @@ class TVStimuli(ABC):
             self.feedback(-1, scoreChange = (not practice) * -400)
         else:
             self.feedback(False, scoreChange = (not practice) * -min(reactionTime, 800)/2)
-        return [(response == correctKey) * 1, testValue, reactionTime, set * 3 + target + 1, fliptime]
+        return [(response == correctKey) * 1, testValue, reactionTime, set * 3 + target + 1, fliptime, timestamp]
         ##See comment on line 230
     
     def feedback(self, correct: bool or int, scoreChange: float = 0):
