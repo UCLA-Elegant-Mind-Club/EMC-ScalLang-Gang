@@ -43,7 +43,7 @@ class RotationProtocol (TVStimuli):
         pass;
     
     def initFile(self):
-        self.csvOutput(["Correct Response","Rotation (deg)", "Reaction Time (ms)", "Target", "Face Start Time (CPU Uptime)"])
+        self.csvOutput(["Correct Response","Rotation (deg)", "Reaction Time (ms)", "Target", "Face Start Time (CPU Uptime)", "UTC Time"])
         
     def demoSequence(self, rotations, demoMessage):
         self.genDisplay(demoMessage, 0, 8)
@@ -101,7 +101,7 @@ class ScalingProtocol(TVStimuli):
         self.showWait()
     
     def initFile(self):
-        self.csvOutput(["Correct Response","Height (deg)", "Reaction Time (ms)", "Target", "Face Start Time (CPU Uptime)"])
+        self.csvOutput(["Correct Response","Height (deg)", "Reaction Time (ms)", "Target", "Face Start Time (CPU Uptime)", "UTC Time"])
     
     def showImage(self, set, showTarget, size):
         self.displayImage.image = self.getImage(set, showTarget)
@@ -162,7 +162,7 @@ class FamousFaces (TVStimuli):
         self.showWait(0.2)
         ##Added cross before memorization faces
         self.showImage(set, target, self.refValue)
-        self.csvOutput([420.69, self.refValue, self.trainingTime, set * 3 + target + 1, upTime()])
+        self.csvOutput([420.69, self.refValue, self.trainingTime, set * 3 + target + 1, upTime(), UTCt()])
         ##Including learning trials in output CSV (denoted by "Correct Response" = 420.69)
         ##10/26/2022: "Target" value changed from a range of 0-8 to 1-9. Now Target value directly corresponds to face number
         self.showWait(self.trainingTime)
@@ -195,7 +195,7 @@ class TrainedFaces (FamousFaces):
     names = ["Virginia", "Brenda", "Nicole", "Vicky", "Beth", "Naomi", "Velma", "Brittany", "Natalie"]
     numSets = 3
     trialsPerSet = 22
-    trainingTime = 20
+    trainingTime = 10
     trainingReps = 1
     
     def __init__(self, testValues, fileName = ''):
