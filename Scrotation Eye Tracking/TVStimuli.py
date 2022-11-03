@@ -27,7 +27,7 @@ class TVStimuli(ABC):
     trialsPerSet = 1
     totalTrials = numSets * trialsPerSet
     
-    trainingTime = 15
+    trainingTime = 20
     trainingReps = 2
     
     crossSize = 4
