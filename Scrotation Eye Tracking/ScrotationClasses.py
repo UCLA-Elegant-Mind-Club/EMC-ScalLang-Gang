@@ -194,8 +194,8 @@ class FamousFacesScaling(FamousFaces, ScalingProtocol):
 class TrainedFaces (FamousFaces):
     names = ["Virginia", "Brenda", "Nicole", "Vicky", "Beth", "Naomi", "Velma", "Brittany", "Natalie"]
     numSets = 3
-    trialsPerSet = 10
-    trainingTime = 10
+    trialsPerSet = 1
+    trainingTime = 15
     trainingReps = 1
     
     def __init__(self, testValues, fileName = ''):
