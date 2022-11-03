@@ -24,10 +24,10 @@ class TVStimuli(ABC):
     debug = False
     
     numSets = 3
-    trialsPerSet = 10
+    trialsPerSet = 1
     totalTrials = numSets * trialsPerSet
     
-    trainingTime = 10
+    trainingTime = 15
     trainingReps = 2
     
     crossSize = 4
