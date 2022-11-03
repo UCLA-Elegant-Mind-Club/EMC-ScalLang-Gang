@@ -39,7 +39,7 @@ figure(1)
 
 % X-Y Plot Overlay
 figure(2)
-img = imread('Face9.png');
+img = imread('Face1.png');
 imshow(img);
 
 for i = 1:length(closestIndex)
