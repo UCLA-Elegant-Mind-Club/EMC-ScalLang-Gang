@@ -38,8 +38,8 @@ class TVStimuli(ABC):
     prePracticeBreak = 5
     postPracticeBreak = 5
     postSetBreak = 60
-    initialPracticeTrials = 3
-    interimPracticeTrials = 3
+    initialPracticeTrials = 1
+    interimPracticeTrials = 1
     dummyTrials = 1
     timeOut = 1.2
     

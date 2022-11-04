@@ -195,7 +195,7 @@ class TrainedFaces (FamousFaces):
     names = ["Virginia", "Brenda", "Nicole", "Vicky", "Beth", "Naomi", "Velma", "Brittany", "Natalie"]
     numSets = 3
     trialsPerSet = 1
-    trainingTime = 15
+    trainingTime = 20
     trainingReps = 1
     
     def __init__(self, testValues, fileName = ''):
@@ -253,7 +253,7 @@ class TrainedFacesPitch(TrainedFaces, RotationProtocol):
 
 #Scaling
 class TrainedFacesScaling(TrainedFaces, ScalingProtocol):
-    trialsPerSet = 40
+    trialsPerSet = 1
     
     def __init__(self, fileName = ''):
         self.initSizes(self.sizes)
