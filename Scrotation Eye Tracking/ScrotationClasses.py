@@ -253,7 +253,7 @@ class TrainedFacesPitch(TrainedFaces, RotationProtocol):
 
 #Scaling
 class TrainedFacesScaling(TrainedFaces, ScalingProtocol):
-    trialsPerSet = 1
+    trialsPerSet = 40
     
     def __init__(self, fileName = ''):
         self.initSizes(self.sizes)
