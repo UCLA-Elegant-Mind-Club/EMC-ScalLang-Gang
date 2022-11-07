@@ -195,7 +195,7 @@ class TrainedFaces (FamousFaces):
     names = ["Virginia", "Brenda", "Nicole", "Vicky", "Beth", "Naomi", "Velma", "Brittany", "Natalie"]
     numSets = 3
     trialsPerSet = 1
-    trainingTime = 20
+    trainingTime = 5
     trainingReps = 1
     
     def __init__(self, testValues, fileName = ''):
