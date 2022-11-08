@@ -82,6 +82,8 @@ for i = 1:length(closestIndex)
     yticklabels([-6: 2: 6])
     %axes('Position', [0.1 0.6 0.5 0.3])
     %imshow(img);
+    axis on
+    set(gca, 'color', 'none', 'box','off');
 
     hold off
     figure(3)
