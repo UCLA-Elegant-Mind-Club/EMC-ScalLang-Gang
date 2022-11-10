@@ -4,9 +4,8 @@ prefs.hardware['audioLib'] = ['ptb', 'pyo']
 import os, time, csv, re, uuid
 from ScrotrackingTVStimuli import TVStimuli as TV
 from ScrotrackingClasses import *
-#from BG_EyeTracking import *
+from BG_EyeTracking import *
 
-longBreakTime = 60
 TV.debug = False
 groupFile = 'ScrotrackingGroupProtocols.csv'
 monitorFile = 'ScrotrackingMonitors.csv'
@@ -52,13 +51,13 @@ def loadSounds():
     playThread.join()
     TV.showWait(0)
 
-def protocolBreak(time = 60):
+def protocolBreak(time = 30):
     for i in range(0, time + 1):
         TV.genDisplay('Longer Break', 0, 9)
         TV.genDisplay('You now have a 4 minute break to rest your eyes, get up,', 0, 6)
         TV.genDisplay('and stretch your arms. If you need to use the restroom,', 0, 4)
         TV.genDisplay('please notify the operator. You can also start the next', 0, 2)
-        TV.genDisplay('protocol early after 1 minute if you are ready.', 0, 0)
+        TV.genDisplay('protocol early after 30 seconds if you are ready.', 0, 0)
         if i < time:
             TV.genDisplay('Seconds left until early start: ' + str(time - i), 0, -4)
             TV.showWait(1)

@@ -23,7 +23,7 @@ textZoom = 1.25
 class TVStimuli(ABC):
     debug = False
     
-    numSets = 1
+    numSets = 2
     trialsPerSet = 40
     totalTrials = numSets * trialsPerSet
     
@@ -145,8 +145,8 @@ class TVStimuli(ABC):
     
     def eyeCalib(self):
         self.genDisplay('Before you begin, we must calibrate the eye tracker.',0,6)
-        self.genDisplay('When you see them, look at the dots going from top left to top right to bottom left.',0,3)
-        self.genDisplay('Continue looking in this pattern until the dots disappear.',0,0)
+        self.genDisplay('Look at the points going from top left to top right to bottom left, and back to top left.',0,3)
+        self.genDisplay('Repeat looking in this pattern until the dots disappear.',0,0)
         self.genDisplay('Press spacebar to continue.',0,-3)
         self.showWait()
         self.showCross(0.2, 0.75)
