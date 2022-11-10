@@ -23,12 +23,14 @@ textZoom = 1.25
 class TVStimuli(ABC):
     debug = False
     
-    numSets = 2
-    trialsPerSet = 40
+    numSets = 2 #experimental protocol values: 2
+    trialsPerSet = 1 #40
     totalTrials = numSets * trialsPerSet
     
-    trainingTime = 10
-    trainingReps = 1
+    #in seconds
+    eyeCalibTime = 5 #5
+    trainingTime = 1 #10
+    trainingReps = 1 #1
     
     crossSize = 4
     referenceSize = 8
@@ -37,11 +39,11 @@ class TVStimuli(ABC):
     practiceFreq = -1
     prePracticeBreak = 5
     postPracticeBreak = 5
-    postSetBreak = 30
-    initialPracticeTrials = 9
-    interimPracticeTrials = 3
-    dummyTrials = 3
-    timeOut = 1.2
+    postSetBreak = 1 #30
+    initialPracticeTrials = 1 #9
+    interimPracticeTrials = 1 #3
+    dummyTrials = 1 #3
+    timeOut = 1.2 #1.2
     
     tvInfo = mon = win = displayImage = 0
     recordData = True
@@ -145,17 +147,18 @@ class TVStimuli(ABC):
     
     def eyeCalib(self):
         self.genDisplay('Before you begin, we must calibrate the eye tracker.',0,6)
-        self.genDisplay('Look at the points going from top left to top right to bottom left, and back to top left.',0,3)
-        self.genDisplay('Repeat looking in this pattern until the dots disappear.',0,0)
-        self.genDisplay('Press spacebar to continue.',0,-3)
+        self.genDisplay('On the next slide, look at the points in the following order to make a triangle:',0,3)
+        self.genDisplay('Top left > Top right > Bottom middle',0,0)
+        self.genDisplay('Repeat looking in this pattern until the dots disappear.',0,-3)
+        self.genDisplay('Press spacebar to continue.',0,-6)
         self.showWait()
         self.showCross(0.2, 0.75)
         self.showWait(0.2)
-        self.csvOutput([420.69, 69.420, self.trainingTime/2, -1, upTime(), UTCt()])
-        self.genDisplay('.',-10,6,height = 8)
-        self.genDisplay('.',10,6, height = 8)
-        self.genDisplay('.',0,-6, height = 8)
-        self.showWait(self.trainingTime/2)
+        self.csvOutput([420.69, 69.42, self.eyeCalibTime * 1000, -1, upTime(), UTCt()])
+        self.genDisplay('.',-12.5,6,height = 8)
+        self.genDisplay('.',12.5,6, height = 8)
+        self.genDisplay('.',0,-3, height = 8)
+        self.showWait(self.eyeCalibTime)
 
     @abstractmethod
     def demoSequence(self, testValues: list, demoMessage: str):
@@ -246,7 +249,7 @@ class TVStimuli(ABC):
             self.showWait(0.2)
             ##Added cross before memorization faces
             self.showImage(set, target, self.refValue)
-            self.csvOutput([420.69, self.refValue, self.trainingTime, set * 3 + target + 1, upTime(), UTCt()])
+            self.csvOutput([420.69, self.refValue, self.trainingTime * 1000, set * 3 + target + 1, upTime(), UTCt()])
             ##Including learning trials in output CSV (denoted by "Correct Response" = 420.69)
             ##10/26/2022: "Target" value changed from a range of 0-8 to 1-9. Now Target value directly corresponds to face number
             self.showWait(self.trainingTime)

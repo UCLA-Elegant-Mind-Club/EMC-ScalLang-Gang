@@ -4,8 +4,9 @@ prefs.hardware['audioLib'] = ['ptb', 'pyo']
 import os, time, random, math
 from ScrotrackingTVStimuli import TVStimuli
 
-##### Parent Rotation and Scaling Classes #####
-
+##### Parent Rotation Class #####
+##### Parent Rotation Class #####
+##### Parent Rotation Class #####
 class RotationProtocol (TVStimuli):
     rotations = [0, 30, 60, 90, 120, 150, 180, -150, -120, -90, -60, -30]
     
@@ -67,6 +68,9 @@ class RotationProtocol (TVStimuli):
             output[1] = -180
             super().csvOutput(output);
 
+##### Parent Scaling Class #####
+##### Parent Scaling Class #####
+##### Parent Scaling Class #####
 class ScalingProtocol(TVStimuli):
     sizes = [1, 2, 4, 8, 16, 28]
     
