@@ -18,18 +18,18 @@ def UTCt():
     t = time.time()
     return t
 
-textZoom = 1.25
+textZoom = 1.25 #1.25 for 121cm monitor; 0.65 for 53 cm mon
 
 class TVStimuli(ABC):
     debug = False
     
     numSets = 2 #experimental protocol values: 2
-    trialsPerSet = 1 #40
+    trialsPerSet = 40 #40
     totalTrials = numSets * trialsPerSet
     
     #in seconds
-    eyeCalibTime = 5 #5
-    trainingTime = 1 #10
+    eyeCalibTime = 10 #10
+    trainingTime = 10 #10
     trainingReps = 1 #1
     
     crossSize = 4
@@ -39,10 +39,10 @@ class TVStimuli(ABC):
     practiceFreq = -1
     prePracticeBreak = 5
     postPracticeBreak = 5
-    postSetBreak = 1 #30
-    initialPracticeTrials = 1 #9
-    interimPracticeTrials = 1 #3
-    dummyTrials = 1 #3
+    postSetBreak = 30 #30
+    initialPracticeTrials = 9 #9
+    interimPracticeTrials = 3 #3
+    dummyTrials = 3 #3
     timeOut = 1.2 #1.2
     
     tvInfo = mon = win = displayImage = 0

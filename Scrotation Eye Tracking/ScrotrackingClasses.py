@@ -14,7 +14,7 @@ class RotationProtocol (TVStimuli):
         self.rotations = rotations
     
     def instructions(self):
-        self.genDisplay('Welcome player. In this module, there will be ' + str(self.numSets) + ' sets of 3 ' + self.stimDescription + self.stimType + 's', 0, 6)
+        self.genDisplay('Welcome player. In this module, there will be 1 set of 3 ' + self.stimDescription + self.stimType + 's', 0, 6)
         self.genDisplay('that you will have to memorize to 3 different keys. After a short training and', 0, 3)
         self.genDisplay('practice round, your mission will be to recognize these ' + self.stimType + 's as fast as', 0, 0)
         self.genDisplay('possible when they have been rotated, so make sure to use your dominant hand!', 0, -3)
@@ -84,7 +84,7 @@ class ScalingProtocol(TVStimuli):
         self.refValue = self.referenceSize
     
     def instructions(self):
-        self.genDisplay('Welcome player. In this module, there will be ' + str(self.numSets) + ' sets of 3 ' + self.stimDescription + self.stimType + 's', 0, 6)
+        self.genDisplay('Welcome player. In this module, there will be 1 set of 3 ' + self.stimDescription + self.stimType + 's', 0, 6)
         self.genDisplay('that you will have to memorize to 3 different keys. After a short training and', 0, 3)
         self.genDisplay('practice round, your mission will be to recognize these ' + self.stimType + 's as fast as', 0, 0)
         self.genDisplay('possible when they have been rescaled, so make sure to use your dominant hand!', 0, -3)
