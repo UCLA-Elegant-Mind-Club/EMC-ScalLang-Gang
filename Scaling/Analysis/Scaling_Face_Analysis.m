@@ -1,25 +1,32 @@
 %% Data Analysis Script for Eye Tracking Protocol Data
-
-% Benjamin Asdell, 2/13/2022
-% Mark Diamond, 2/13/2022 updates
-    % WORKING!!!!!
-
-% Updated on 6/30/2022 for Sentence Reading Analysis
-% Even more updated on 7/12/2022 for actually working stuff lol hopefully
-
-% July-August 2022:
-    % Updated several times by Mark and the Attention Group
-    % to make degree plots with labels, fixing broken plots, and overlaying
-    % sentence text behind X-Y plot.
-
-% 8/9/2022:
-    % Discovered and fixed process error to match up with the max 10
-    % seconds protocol timeout, instead of using maxReadingTime to cut the data.
-
-% 8/9/2022:
-    % Added animated X-Y plot
+% #sponsored by Mark and Daniel (special thanks to Caominh and Brian)
 
 close all; clear all; clc;
+%% Declarting Variables
+
+% monitor dimensions
+width_px = 4096;
+height_px = 2160;
+
+width_cm = 121;
+height_cm = 68;
+
+%participant distance
+dist_cm = 121;
+
+% face size in degrees
+face = 8;
+
+% xy-plot axis label step size
+step = 2;
+
+% overlay image
+img = imread('121cm F1.png');
+
+%% Conversion Factors
+x_deg2px = dist_cm*tand(1) * width_px / width_cm;
+y_deg2px = dist_cm*tand(1) * height_px / height_cm;
+
 %% Loading Data from Files
 
 [EyeDataName, EyeDataPath] = uigetfile('*.txt'); %opens selection dialog box to select specific eye data
@@ -48,9 +55,9 @@ A = repmat(rawEyeTracking_Time, [1, height(breakpoints)]);
 [minValue, closestIndex] = min(abs(A-breakpoints'));
 closestValue = rawEyeTracking_X(closestIndex); % Not needed, just interesting, cool to see that theyre all ~2000 px (middle of screen)!
 
-EyeTracking_X = zeros(1000+1, length(closestIndex)); % 1000 for max 10 second timeout in protocol
-EyeTracking_Y = zeros(1000+1, length(closestIndex));
-EyeTracking_Time = zeros(1000+1, length(closestIndex));
+EyeTracking_X = []; % 1000 for max 10 second timeout in protocol
+EyeTracking_Y = [];
+EyeTracking_Time = [];
 
 %% Plotting
 
@@ -58,7 +65,6 @@ figure(1)
 
 % X-Y Plot Overlay
 figure(2)
-img = imread('Face9.png');
 imshow(img);
 
 for i = 1:length(closestIndex)
@@ -77,10 +83,12 @@ for i = 1:length(closestIndex)
     xlabel("Time (s)")
     ylabel("Horizontal Distance (degrees)")
     xlim([0,maxReadingTime]) % Time, in s
-    ylim([-3.2053, 3843.21])
+    ylim([((width_px/2) - (30*x_deg2px)), ((width_px/2) + (30*x_deg2px))])
     xticks([0,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000])
     xticklabels([0,1,2,3,4,5,6,7,8,9,10])
-    yticks([-3.2053,637.863,1278.93,1920,2561.07,3202.14,3843.21])
+    yticks([((width_px/2) - (30*x_deg2px)),((width_px/2) - (20*x_deg2px)),((width_px/2) - (10*x_deg2px)), ...
+        (width_px/2), ...
+        ((width_px/2) + (10*x_deg2px)),((width_px/2) + (20*x_deg2px)),((width_px/2) + (30*x_deg2px))])
     yticklabels([-30,-20,-10,0,10,20,30])
     
 
@@ -88,17 +96,22 @@ for i = 1:length(closestIndex)
     figure(2)
     hold on
     % 150:max to cut off jumbled mess before the trial begins after cue
-    plot(EyeTracking_X(1:max(closestIndex2),i), EyeTracking_Y(1:max(closestIndex2),i), "LineWidth", 2, "Marker", '.', "MarkerSize", 20)
+    %plot(EyeTracking_X(1:max(closestIndex2),i), EyeTracking_Y(1:max(closestIndex2),i), "LineWidth", 2, "Marker", '.', "MarkerSize", 20)
+    scatter(EyeTracking_X(1:max(closestIndex2),i), EyeTracking_Y(1:max(closestIndex2),i), 30, "Marker", '.')
     title("X-Y Plot")
     set(gca, 'YDir','reverse')
     xlabel("Horizontal eccentricity (degrees)")
     ylabel("Vertical eccentricity (degrees)")
-    axis([-3.2053 3843.21 -115.351 2275.35]) % For X_Y Plot
-    xticks([-3.2053,637.863,1278.93,1920,2561.07,3202.14,3843.21])
-    xticklabels([-30,-20,-10,0,10,20,30])
-    yticks([-115.351, 482.324, 1080, 1677.68, 2275.35])
-    yticklabels([-20,-10,0,10,20])
-    
+    axis([((width_px/2) - ((face/2)*x_deg2px)) ((width_px/2) + ((face/2)*x_deg2px)) ...
+        ((height_px/2) - ((face/2)*y_deg2px)) ((height_px/2) + ((face/2)*y_deg2px))]) % For X_Y Plot
+    xticks([((width_px/2) - ((face/2)*x_deg2px)): (step*x_deg2px): ((width_px/2) + ((face/2)*x_deg2px))])
+    xticklabels([-(face/2): step: (face/2)])
+    yticks([((height_px/2) - ((face/2)*y_deg2px)): (step*y_deg2px): ((height_px/2) + ((face/2)*y_deg2px))])
+    yticklabels([-(face/2): step: (face/2)])
+    %axes('Position', [0.1 0.6 0.5 0.3])
+    %imshow(img);
+    axis on
+    set(gca, 'color', 'none', 'box','off');
 
     hold off
     figure(3)
@@ -109,9 +122,11 @@ for i = 1:length(closestIndex)
     xlabel("Time (s)")
     ylabel("Vertical Distance (degrees)")
     xlim([0,maxReadingTime]) % Time, in s
-    ylim([-115.351, 2275.35])
+    ylim([((height_px/2) - (20*y_deg2px)), ((height_px/2) + (20*y_deg2px))])
     xticks([0, 1000, 2000, 3000, 4000, 5000,6000,7000,8000,9000,10000])
     xticklabels([0, 1, 2, 3, 4, 5,6,7,8,9,10])
-    yticks([-115.351, 482.324, 1080, 1677.68, 2275.35])
+    yticks([((height_px/2) - (20*y_deg2px)), ((height_px/2) - (10*y_deg2px)), ...
+        (height_px/2), ...
+        ((height_px/2) + (10*y_deg2px)), ((height_px/2) + (20*y_deg2px))])
     yticklabels([-20,-10,0,10,20])
 end
