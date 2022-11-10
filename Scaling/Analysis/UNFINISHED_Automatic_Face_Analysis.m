@@ -47,13 +47,8 @@ rawEyeTracking_Time = rawEyeTrackingData(:,1);
 rawEyeTracking_X = rawEyeTrackingData(:,2);
 rawEyeTracking_Y = rawEyeTrackingData(:,3);
 
-A = repmat(rawEyeTracking_Time, [1, height(breakpoints)]);
-[minValue, closestIndex] = min(abs(A-breakpoints'));
-closestValue = rawEyeTracking_X(closestIndex); % Not needed, just interesting, cool to see that theyre all ~2000 px (middle of screen)!
-
-EyeTracking_X = []; % 1000 for max 10 second timeout in protocol
-EyeTracking_Y = [];
-EyeTracking_Time = [];
+%renormalize eye tracking time to 0 for trials (instead of long CPU uptimes)
+[minValue, closestIndex] = min(abs(rawEyeTracking_Time-breakpoints));
 
 %% Plotting
 for i = 1:length(closestIndex)
@@ -61,8 +56,7 @@ for i = 1:length(closestIndex)
     EyeTracking_Y(:,i) = rawEyeTracking_Y(closestIndex(i):closestIndex(i)+1000);
     EyeTracking_Time(:,i) = rawEyeTracking_Time(closestIndex(i):closestIndex(i)+1000) - rawEyeTracking_Time(closestIndex(i));
     
-    B = EyeTracking_Time;
-    [minValue2, closestIndex2] = min(abs(B-maxReadingTime'));
+    [minValue2, closestIndex2] = min(abs(EyeTracking_Time-maxReadingTime'));
     
     hold off
 %figure 1: X-time
