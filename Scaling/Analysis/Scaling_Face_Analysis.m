@@ -2,7 +2,7 @@
 % #sponsored by Mark and Daniel (special thanks to Caominh and Brian)
 
 close all; clear all; clc;
-%% Declarting Variables
+%% Declaring Variables
 
 % monitor dimensions
 width_px = 4096;
@@ -108,8 +108,6 @@ for i = 1:length(closestIndex)
     xticklabels([-(face/2): step: (face/2)])
     yticks([((height_px/2) - ((face/2)*y_deg2px)): (step*y_deg2px): ((height_px/2) + ((face/2)*y_deg2px))])
     yticklabels([-(face/2): step: (face/2)])
-    %axes('Position', [0.1 0.6 0.5 0.3])
-    %imshow(img);
     axis on
     set(gca, 'color', 'none', 'box','off');
 
