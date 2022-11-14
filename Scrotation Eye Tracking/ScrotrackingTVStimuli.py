@@ -154,7 +154,7 @@ class TVStimuli(ABC):
         self.showWait()
         self.showCross(0.2, 0.75)
         self.showWait(0.2)
-        self.csvOutput([420.69, 69.42, self.eyeCalibTime * 1000, -1, upTime(), UTCt()])
+        self.csvOutput([420.69, -1, self.eyeCalibTime * 1000, -1, upTime(), UTCt()])
         self.genDisplay('.',0,1.25,height = 4)
         self.genDisplay('.',-17,9, height = 4)
         self.genDisplay('.',3,-6, height = 4)

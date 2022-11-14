@@ -4,9 +4,9 @@ prefs.hardware['audioLib'] = ['ptb', 'pyo']
 import os, time, csv, re, uuid
 from ScrotrackingTVStimuli import TVStimuli as TV
 from ScrotrackingClasses import *
-#from BG_EyeTracking import *
+from BG_EyeTracking import *
 
-TV.debug = True
+TV.debug = False
 groupFile = 'ScrotrackingGroupProtocols.csv'
 monitorFile = 'ScrotrackingMonitors.csv'
 
