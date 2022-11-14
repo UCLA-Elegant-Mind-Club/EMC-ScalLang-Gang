@@ -126,17 +126,18 @@ def main():
         codeDialog = gui.DlgFromDict(dictionary = codeInfo, sortKeys = False, title = 'Participant Info')
         if codeDialog.OK == False:
             core.quit()
+    #TV Debug values
     else:
         codeInfo = {'Participant Name': 'Test'}
         protocol.trialsPerSet = 1
         protocol.initialPracticeTrials = 1
+        protocol.eyeCalibTime = 2
         protocol.trainingTime = 1
         protocol.interimPracticeTrials = 1
         protocol.prePracticeBreak = 1
         protocol.postPracticeBreak = 1
         protocol.postSetBreak = 1
         protocol.dummyTrials = 1
-        protocol.eyeCalibTime = 2
     
     # Prepare directories
     dataFolder = os.path.join(os.getcwd(), 'Data')
