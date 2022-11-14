@@ -42,7 +42,7 @@ class TVStimuli(ABC):
     postSetBreak = 30 #30
     initialPracticeTrials = 9 #9
     interimPracticeTrials = 3 #3
-    dummyTrials = 1 #3
+    dummyTrials = 3 #3
     timeOut = 1.2 #1.2
     
     tvInfo = mon = win = displayImage = 0
@@ -147,17 +147,17 @@ class TVStimuli(ABC):
     
     def eyeCalib(self):
         self.genDisplay('Before you continue, we must calibrate the eye tracker.',0,6)
-        self.genDisplay('On the next slide, look at the points in the following order to make a triangle:',0,3)
-        self.genDisplay('Top left > Top right > Bottom middle',0,0)
+        self.genDisplay('On the next slide, look at the random points in the following order:',0,3)
+        self.genDisplay('Center > Bottom right > Top left > Center',0,0)
         self.genDisplay('Repeat looking in this pattern until the dots disappear.',0,-3)
         self.genDisplay('Press spacebar to continue.',0,-6)
         self.showWait()
         self.showCross(0.2, 0.75)
         self.showWait(0.2)
         self.csvOutput([420.69, 69.42, self.eyeCalibTime * 1000, -1, upTime(), UTCt()])
-        self.genDisplay('.',-12.5,6,height = 8)
-        self.genDisplay('.',12.5,6, height = 8)
-        self.genDisplay('.',0,-3, height = 8)
+        self.genDisplay('.',0,1.25,height = 4)
+        self.genDisplay('.',-17,9, height = 4)
+        self.genDisplay('.',3,-6, height = 4)
         self.showWait(self.eyeCalibTime)
         self.genDisplay('Are you ready?', 0, 3, height = 3)
         self.genDisplay('Press space to start.', 0, -2)

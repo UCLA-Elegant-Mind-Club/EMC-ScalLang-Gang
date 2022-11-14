@@ -6,7 +6,7 @@ from ScrotrackingTVStimuli import TVStimuli as TV
 from ScrotrackingClasses import *
 #from BG_EyeTracking import *
 
-TV.debug = False
+TV.debug = True
 groupFile = 'ScrotrackingGroupProtocols.csv'
 monitorFile = 'ScrotrackingMonitors.csv'
 
