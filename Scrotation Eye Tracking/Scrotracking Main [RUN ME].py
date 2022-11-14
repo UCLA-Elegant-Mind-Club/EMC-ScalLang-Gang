@@ -4,9 +4,9 @@ prefs.hardware['audioLib'] = ['ptb', 'pyo']
 import os, time, csv, re, uuid
 from ScrotrackingTVStimuli import TVStimuli as TV
 from ScrotrackingClasses import *
-from BG_EyeTracking import *
+#from BG_EyeTracking import *
 
-TV.debug = False
+TV.debug = True
 groupFile = 'ScrotrackingGroupProtocols.csv'
 monitorFile = 'ScrotrackingMonitors.csv'
 
@@ -129,10 +129,10 @@ def main():
     #TV Debug values
     else:
         codeInfo = {'Participant Name': 'Test'}
-        protocol.trialsPerSet = 1
+        protocol.trialsPerSet = 12
         protocol.initialPracticeTrials = 1
-        protocol.eyeCalibTime = 2
-        protocol.trainingTime = 1
+        protocol.eyeCalibTime = 3
+        protocol.trainingTime = 3
         protocol.interimPracticeTrials = 1
         protocol.prePracticeBreak = 1
         protocol.postPracticeBreak = 1
