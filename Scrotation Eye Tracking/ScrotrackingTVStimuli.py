@@ -18,7 +18,7 @@ def UTCt():
     t = time.time()
     return t
 
-textZoom = 0.4 #1.25 for 121cm monitor; 0.65 for 53 cm mon
+textZoom = 1.25 #1.25 for 121cm monitor; 0.65 for 53 cm mon
 
 class TVStimuli(ABC):
     debug = False
