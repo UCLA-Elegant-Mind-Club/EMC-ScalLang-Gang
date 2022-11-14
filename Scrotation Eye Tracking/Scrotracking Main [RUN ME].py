@@ -131,13 +131,14 @@ def main():
         codeInfo = {'Participant Name': 'Test'}
         protocol.trialsPerSet = 12
         protocol.initialPracticeTrials = 1
-        protocol.eyeCalibTime = 3
-        protocol.trainingTime = 3
+        protocol.eyeCalibTime = 0.5
+        protocol.trainingTime = 0.5
         protocol.interimPracticeTrials = 1
         protocol.prePracticeBreak = 1
         protocol.postPracticeBreak = 1
         protocol.postSetBreak = 1
         protocol.dummyTrials = 1
+        timeOut = 5
     
     # Prepare directories
     dataFolder = os.path.join(os.getcwd(), 'Data')
