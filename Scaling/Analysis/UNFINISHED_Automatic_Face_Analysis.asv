@@ -42,7 +42,7 @@ RTData = table2array(RTData); %Convert to array
 
 %% Processing
 breakpoints = RTData(:,5); %finds specific timestamps where face appears (CPU uptime)
-maxReadingLines = max(RTData(:,2))/1000*90; %in Hz
+maxReadingLines = max(RTData(:,2))/1000*; %in Hz
 rawEyeTracking_Time = rawEyeTrackingData(:,1);
 rawEyeTracking_X = rawEyeTrackingData(:,2);
 rawEyeTracking_Y = rawEyeTrackingData(:,3);
