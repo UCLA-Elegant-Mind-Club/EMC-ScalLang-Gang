@@ -29,10 +29,6 @@ class RotationProtocol (TVStimuli):
         self.showWait()
         self.demo()
         self.showHighScores()
-        self.eyeCalib()
-        self.genDisplay('Are you ready?', 0, 3, height = 3)
-        self.genDisplay('Press space to start.', 0, -2)
-        self.showWait()
     
     def showImage(self, set, showTarget, rotation):
         self.displayImage.image = self.getImage(set, showTarget)
@@ -99,10 +95,6 @@ class ScalingProtocol(TVStimuli):
         self.showWait()
         self.demo()
         self.showHighScores()
-        self.eyeCalib()
-        self.genDisplay('Are you ready?', 0, 3, height = 3)
-        self.genDisplay('Press space to start.', 0, -2)
-        self.showWait()
     
     def initFile(self):
         self.csvOutput(["Correct Response","Height (deg)", "Reaction Time (ms)", "Target", "CPU Uptime", "UTC time"])

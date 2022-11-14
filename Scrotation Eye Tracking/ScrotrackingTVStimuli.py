@@ -18,7 +18,7 @@ def UTCt():
     t = time.time()
     return t
 
-textZoom = 1.25 #1.25 for 121cm monitor; 0.65 for 53 cm mon
+textZoom = 0.4 #1.25 for 121cm monitor; 0.65 for 53 cm mon
 
 class TVStimuli(ABC):
     debug = False
@@ -42,7 +42,7 @@ class TVStimuli(ABC):
     postSetBreak = 30 #30
     initialPracticeTrials = 9 #9
     interimPracticeTrials = 3 #3
-    dummyTrials = 3 #3
+    dummyTrials = 1 #3
     timeOut = 1.2 #1.2
     
     tvInfo = mon = win = displayImage = 0
@@ -146,7 +146,7 @@ class TVStimuli(ABC):
         pass
     
     def eyeCalib(self):
-        self.genDisplay('Before you begin, we must calibrate the eye tracker.',0,6)
+        self.genDisplay('Before you continue, we must calibrate the eye tracker.',0,6)
         self.genDisplay('On the next slide, look at the points in the following order to make a triangle:',0,3)
         self.genDisplay('Top left > Top right > Bottom middle',0,0)
         self.genDisplay('Repeat looking in this pattern until the dots disappear.',0,-3)
@@ -159,6 +159,9 @@ class TVStimuli(ABC):
         self.genDisplay('.',12.5,6, height = 8)
         self.genDisplay('.',0,-3, height = 8)
         self.showWait(self.eyeCalibTime)
+        self.genDisplay('Are you ready?', 0, 3, height = 3)
+        self.genDisplay('Press space to start.', 0, -2)
+        self.showWait()
 
     @abstractmethod
     def demoSequence(self, testValues: list, demoMessage: str):
@@ -239,9 +242,10 @@ class TVStimuli(ABC):
     
     def learningTrial(self, set: int, target: int, mapping: str, repeatText: bool = False):
             yShift = repeatText * 3
+            time = self.trainingTime if set==0 else self.trainingTime/2
             if(repeatText):
                 self.genDisplay('Training has restarted from the first ' + self.stimType + '.', 0, 6)
-            self.genDisplay('You have ' + str(self.trainingTime) + ' seconds to', 0, 6 - yShift)
+            self.genDisplay('You have ' + str(time) + ' seconds to', 0, 6 - yShift)
             self.genDisplay('memorize the ' + self.stimType + ' on the next slide (mapped to ' + mapping + ')', 0, 3 - yShift)
             self.genDisplay('Press \'' + mapping + '\' to continue.', 0, -3)
             self.showWait(keys = [mapping])
@@ -249,16 +253,18 @@ class TVStimuli(ABC):
             self.showWait(0.2)
             ##Added cross before memorization faces
             self.showImage(set, target, self.refValue)
-            self.csvOutput([420.69, self.refValue, self.trainingTime * 1000, set * 3 + target + 1, upTime(), UTCt()])
+            self.csvOutput([420.69, self.refValue, time * 1000, set * 3 + target + 1, upTime(), UTCt()])
             ##Including learning trials in output CSV (denoted by "Correct Response" = 420.69)
             ##10/26/2022: "Target" value changed from a range of 0-8 to 1-9. Now Target value directly corresponds to face number
-            self.showWait(self.trainingTime)
+            self.showWait(time)
             self.genDisplay('Press \'' + mapping + '\' to continue.', 0, 0)
             self.showWait(keys = [mapping])
     
     def learningPeriod(self, set: int):
-        self.genDisplay('You have ' + str(self.trainingTime) + ' seconds to', 0, 6)
-        self.genDisplay('memorize each of the 3 ' + self.stimType + 's on the next slides.', 0, 3)
+        time = self.trainingTime if set==0 else self.trainingTime/2
+        remem = set==0 if "" else "re"
+        self.genDisplay('You have ' + str(time) + ' seconds to', 0, 6)
+        self.genDisplay(remem+'memorize each of the 3 ' + self.stimType + 's on the next slides.', 0, 3)
         self.genDisplay('Don\'t focus on memorizing minor details.', 0, 0)
         if self.trainingReps > 1:
             self.genDisplay('The ' + self.stimType + 's will each be repeated ' + str(self.trainingReps) + ' times', 0, -3)
@@ -427,6 +433,7 @@ class TVStimuli(ABC):
     def main(self):
         self.instructions()
         for setNum in range(0, self.numSets):
+            self.eyeCalib()
             self.levelScreen('Level', str(setNum + 1))
             self.learningPeriod(setNum)
             self.practiceRound(setNum, self.initialPracticeTrials, trialsLeft = self.totalTrials - setNum * self.trialsPerSet)

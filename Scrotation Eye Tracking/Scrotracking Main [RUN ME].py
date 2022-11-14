@@ -128,15 +128,15 @@ def main():
             core.quit()
     else:
         codeInfo = {'Participant Name': 'Test'}
-        protocol.trialsPerSet = 3
-        protocol.numSets = 1
-        protocol.initialPracticeTrials = 3
+        protocol.trialsPerSet = 1
+        protocol.initialPracticeTrials = 1
         protocol.trainingTime = 1
-        protocol.interimPracticeTrials = 0
+        protocol.interimPracticeTrials = 1
         protocol.prePracticeBreak = 1
         protocol.postPracticeBreak = 1
         protocol.postSetBreak = 1
         protocol.dummyTrials = 1
+        protocol.eyeCalibTime = 2
     
     # Prepare directories
     dataFolder = os.path.join(os.getcwd(), 'Data')
