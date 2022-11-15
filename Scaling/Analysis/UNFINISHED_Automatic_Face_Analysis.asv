@@ -16,65 +16,62 @@ dist_cm = 121;
 % face height in degrees
 face = 8;
 
+% time delay in ms
+timeDelay = 109;
+
+% frame rate in hz
+frameRate = 90;
+
 % axis label step size for x-y plot
 step = 2;
 
 % overlay image
 imgs = [imread('121cm F1.png'), imread('121cm F2.png'), imread('121cm F3.png'), imread('121cm demo.png')];
-
+targetMap = [1,                 2,                      3,                      -1];
 %% Conversion Factors
 x_deg2px = dist_cm*tand(1) * width_px / width_cm;
 y_deg2px = dist_cm*tand(1) * height_px / height_cm;
 
-%% Loading Data from Files
-[EyeDataName, EyeDataPath] = uigetfile('*.txt'); %opens selection dialog box to select specific eye data
-fullEyeDataFilename = fullfile(EyeDataPath, EyeDataName); %concatenates path and filename
-rawEyeTrackingData = readtable(fullEyeDataFilename); %FIX?: Imports everything, TobiiState Present/NotPresent imports as NaN
+%% Loading and Processing Data from Files
 
-rawEyeTrackingData = rawEyeTrackingData(:,2:end); % Removes first column
-rawEyeTrackingData(any(ismissing(rawEyeTrackingData), 2), :) = []; % Removes NaN entries
-rawEyeTrackingData = table2array(rawEyeTrackingData); %Convert to array
+% Import and reformat raw eye-tracking data from txt file
+[file, folder] = uigetfile('*.txt');
+eyeData = readtable(fullfile(folder, file));
+eyeData = eyeData(any(ismissing(eyeData)), :); % Remove NaN rows
+eyeTime = eyeData{:,2};
+eyeX = atand((eyeData{:,3} - width_px/2) / dist_cm); %x and y coords are now in angles of eccen
+eyeY = atand((eyeData{:,4} - height_px/2) / dist_cm);
 
-[RTDataName, RTDataPath] = uigetfile('*.csv'); %opens selection dialog box to select specific trial data
-fullRTDataFilename = fullfile(RTDataPath, RTDataName); %concatenates path and filename
-RTData = readtable(fullRTDataFilename); %reads all protocol data to table
-RTData = table2array(RTData); %Convert to array
+% Import and reformat RT data from csv file
+[file, folder] = uigetfile('*.csv');
+RTData = table2array(readtable(fullfile(folder, file)));
+breakPoints = RTData(:,5) + timeDelay / 1000 * frameRate; %finds specific CPU Uptimes when face appears
+endPoints = breakPoints + RTData(:,3) / 1000 * frameRate; %finds specific CPU Uptimes when response
+targets = RTData(:,2);
+
+clear plotData;
+plotData(length(targetMap)).eyeTrackingLines = [];
+
 
 %% Processing
-breakpoints = RTData(:,5); %finds specific timestamps where face appears (CPU uptime)
-maxReadingLines = max(RTData(:,2))/1000*; %in Hz
-rawEyeTracking_Time = rawEyeTrackingData(:,1);
-rawEyeTracking_X = rawEyeTrackingData(:,2);
-rawEyeTracking_Y = rawEyeTrackingData(:,3);
-
-%renormalize eye tracking time to 0 for trials (instead of long CPU uptimes)
-[minValue, closestIndex] = min(abs(rawEyeTracking_Time-breakpoints));
-
+eyeTrackingIndex = 1;
+for trial = 1:height(breakPoints)
+    if RTData(:,1) == 0; continue; end %skips incorrect trials
+    while eyeTrackingIndex < breakPoints(trial)
+        eyeTrackingIndex = eyeTrackingIndex + 1;
+    end
+    start = eyeTrackingIndex;
+    while eyeTrackingIndex < endPoints(trial)
+        eyeTrackingIndex = eyeTrackingIndex + 1;
+    end
+    target = find(targetMap == targets(trial));
+    plotData(target).eyeTrackingLines = [plotData(target).eyeTrackingLines; [start, eyeTrackingIndex - 1]];
+end
+.
 %% Plotting
-for i = 1:length(closestIndex)
-    EyeTracking_X(:,i) = rawEyeTracking_X(closestIndex(i):closestIndex(i)+1000);
-    EyeTracking_Y(:,i) = rawEyeTracking_Y(closestIndex(i):closestIndex(i)+1000);
-    EyeTracking_Time(:,i) = rawEyeTracking_Time(closestIndex(i):closestIndex(i)+1000) - rawEyeTracking_Time(closestIndex(i));
-    
-    [minValue2, closestIndex2] = min(abs(EyeTracking_Time-maxReadingLines'));
-    
-    hold off
+
 %figure 1: X-time
-    figure(1)
-    hold on
-    plot(EyeTracking_Time(:,i), EyeTracking_X(:,i))
-    title("X-Time Plot")
-    xlabel("Time (s)")
-    ylabel("Horizontal Distance (degrees)")
-    xlim([0,maxReadingLines]) % Time, in s
-    ylim([((width_px/2) - (30*x_deg2px)), ((width_px/2) + (30*x_deg2px))])
-    xticks([0,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000])
-    xticklabels([0,1,2,3,4,5,6,7,8,9,10])
-    yticks([((width_px/2) - (30*x_deg2px)),((width_px/2) - (20*x_deg2px)),((width_px/2) - (10*x_deg2px)), ...
-        (width_px/2), ...
-        ((width_px/2) + (10*x_deg2px)),((width_px/2) + (20*x_deg2px)),((width_px/2) + (30*x_deg2px))])
-    yticklabels([-30,-20,-10,0,10,20,30])
-    hold off
+    
 %figure 2: X-Y
     figure(2)
     imshow(imgs);
@@ -111,4 +108,25 @@ for i = 1:length(closestIndex)
         (height_px/2), ...
         ((height_px/2) + (10*y_deg2px)), ((height_px/2) + (20*y_deg2px))])
     yticklabels([-20,-10,0,10,20])
-end
+
+
+function plotXTime(eyeX, time, lines, targetMap)
+    eyeX = eyeX(lines);
+    time = time(lines);
+    
+    for targetIndex = 1:length(targetMap)
+        figure(targetIndex);
+        hold on
+        plot(time, x)
+        title("X-Time Plot for Target " + targetMap(targetIndex));
+        xlabel("Time (ms)")
+    ylabel("Horizontal Distance (degrees)")
+    xlim([0,maxReadingLines]) % Time, in s
+    ylim([((width_px/2) - (30*x_deg2px)), ((width_px/2) + (30*x_deg2px))])
+    xticks([0,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000])
+    xticklabels([0,1,2,3,4,5,6,7,8,9,10])
+    yticks([((width_px/2) - (30*x_deg2px)),((width_px/2) - (20*x_deg2px)),((width_px/2) - (10*x_deg2px)), ...
+        (width_px/2), ...
+        ((width_px/2) + (10*x_deg2px)),((width_px/2) + (20*x_deg2px)),((width_px/2) + (30*x_deg2px))])
+    yticklabels([-30,-20,-10,0,10,20,30])
+    hold off
