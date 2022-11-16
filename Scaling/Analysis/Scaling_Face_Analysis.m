@@ -20,7 +20,7 @@ face = 8;
 step = 2;
 
 % overlay image
-img = imread('121cm F1.png');
+img = imread('121cm F1 8deg.png');
 
 %% Conversion Factors
 x_deg2px = dist_cm*tand(1) * width_px / width_cm;
@@ -41,8 +41,8 @@ RTData = readtable(fullRTDataFilename); %reads all protocol data to table
 RTData = table2array(RTData); %Convert to array
 
 %% Processing
-breakpoints = RTData(:,3); %finds specific timestamps where face appears (CPU uptime)
-maxReadingTime = max(RTData(:,2))*1000; %in milliseconds
+breakpoints = RTData(:,5); %finds specific timestamps where face appears (CPU uptime)
+maxReadingTime = max(RTData(:,3)); %in milliseconds
 rawEyeTracking_Time = rawEyeTrackingData(:,1);
 rawEyeTracking_X = rawEyeTrackingData(:,2);
 rawEyeTracking_Y = rawEyeTrackingData(:,3);
@@ -86,8 +86,8 @@ for i = 1:length(closestIndex)
     imshow(img);
     hold on
 %comment out EITHER plot(...) or scatter(...) to include lines or not between points
-    %plot(EyeTracking_X(1:max(closestIndex2),i), EyeTracking_Y(1:max(closestIndex2),i), "LineWidth", 2, "Marker", '.', "MarkerSize", 20)
-    scatter(EyeTracking_X(1:max(closestIndex2),i), EyeTracking_Y(1:max(closestIndex2),i), 30, "Marker", '.')
+    plot(EyeTracking_X(1:max(closestIndex2),i), EyeTracking_Y(1:max(closestIndex2),i), "LineWidth", 2, "Marker", '.', "MarkerSize", 20)
+    %scatter(EyeTracking_X(1:max(closestIndex2),i), EyeTracking_Y(1:max(closestIndex2),i), 30, "Marker", '.')
     title("X-Y Plot")
     set(gca, 'YDir','reverse')
     xlabel("Horizontal Eccentricity (degrees)")
