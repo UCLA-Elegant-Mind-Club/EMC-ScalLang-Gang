@@ -26,8 +26,12 @@ frameRate = 90;
 step = 2;
 
 % overlay image
+% see imgIndex function at bottom for indexing info of plotData
 imgs = [imread('121cm F1.png'), imread('121cm F2.png'), imread('121cm F3.png'), imread('121cm demo.png')];
-targetMap = [1,                 2,                      3,                      -1];
+clear plotData;
+plotData(length(imgs)).eyeTrackingLines = [];
+
+
 %% Conversion Factors
 x_deg2px = dist_cm*tand(1) * width_px / width_cm;
 y_deg2px = dist_cm*tand(1) * height_px / height_cm;
@@ -46,12 +50,9 @@ eyeY = atand((eyeData{:,4} - height_px/2) / dist_cm);
 [file, folder] = uigetfile('*.csv');
 RTData = table2array(readtable(fullfile(folder, file)));
 breakPoints = RTData(:,5) + timeDelay / 1000 * frameRate; %finds specific CPU Uptimes when face appears
-endPoints = breakPoints + RTData(:,3) / 1000 * frameRate; %finds specific CPU Uptimes when response
+endPoints = breakPoints + RTData(:,4) / 1000 * frameRate; %finds specific CPU Uptimes when response
 targets = RTData(:,2);
-
-clear plotData;
-plotData(length(targetMap)).eyeTrackingLines = [];
-
+heights = RTData(:,3);
 
 %% Processing
 eyeTrackingIndex = 1;
@@ -64,14 +65,15 @@ for trial = 1:height(breakPoints)
     while eyeTrackingIndex < endPoints(trial)
         eyeTrackingIndex = eyeTrackingIndex + 1;
     end
-    target = find(targetMap == targets(trial));
-    plotData(target).eyeTrackingLines = [plotData(target).eyeTrackingLines; [start, eyeTrackingIndex - 1]];
+    index = imgIndex(targets(trial), heights(trial));
+    plotData(index).eyeTrackingLines = [plotData(index).eyeTrackingLines; [start, eyeTrackingIndex - 1]];
 end
-.
+
 %% Plotting
 
 %figure 1: X-time
-    
+
+
 %figure 2: X-Y
     figure(2)
     imshow(imgs);
@@ -109,17 +111,20 @@ end
         ((height_px/2) + (10*y_deg2px)), ((height_px/2) + (20*y_deg2px))])
     yticklabels([-20,-10,0,10,20])
 
-
-function plotXTime(eyeX, time, lines, targetMap)
-    eyeX = eyeX(lines);
-    time = time(lines);
+function index = imgIndex(target, size)
     
-    for targetIndex = 1:length(targetMap)
-        figure(targetIndex);
-        hold on
+end
+
+function plotXTime(eyeX, time, lines, target, height)
+    index = imgIndex(target, height);
+    figure(index);
+    hold on
+    for i = 1:height(lines)
+        start
         plot(time, x)
-        title("X-Time Plot for Target " + targetMap(targetIndex));
-        xlabel("Time (ms)")
+    end
+    title("X-Time Plot for Target " + target);
+    xlabel("Time (ms)")
     ylabel("Horizontal Distance (degrees)")
     xlim([0,maxReadingLines]) % Time, in s
     ylim([((width_px/2) - (30*x_deg2px)), ((width_px/2) + (30*x_deg2px))])
