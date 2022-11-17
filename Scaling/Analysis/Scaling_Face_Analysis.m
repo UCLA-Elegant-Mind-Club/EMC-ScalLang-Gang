@@ -14,10 +14,10 @@ height_cm = 68;
 dist_cm = 121;
 
 % face height in degrees
-face = 8;
+face = 24;
 
 % axis label step size for x-y plot
-step = 2;
+step = face/4;
 
 % overlay image
 [file,path] = uigetfile('*.png');
@@ -43,7 +43,7 @@ RTData = table2array(RTData); %Convert to array
 
 %% Processing
 breakpoints = RTData(:,5); %finds specific timestamps where face appears (CPU uptime)
-maxReadingTime = 1.2*max(RTData(:,3)); %in milliseconds
+maxReadingTime = 5*max(RTData(:,3)); %in milliseconds
 rawEyeTracking_Time = rawEyeTrackingData(:,1);
 rawEyeTracking_X = rawEyeTrackingData(:,2);
 rawEyeTracking_Y = rawEyeTrackingData(:,3);
@@ -57,10 +57,14 @@ EyeTracking_Y = [];
 EyeTracking_Time = [];
 
 %% Plotting
+figure(2)
+imshow(img);
+color = ["#0072BD" "#D95319" "#EDB120" "#7E2F8E" "#77AC30" "#4DBEEE" "#A2142F"];
+
 for i = 1:length(closestIndex)
-    EyeTracking_X(:,i) = rawEyeTracking_X(closestIndex(i):closestIndex(i)+90/1000*maxReadingTime(i));
-    EyeTracking_Y(:,i) = rawEyeTracking_Y(closestIndex(i):closestIndex(i)+90/1000*maxReadingTime(i));
-    EyeTracking_Time(:,i) = rawEyeTracking_Time(closestIndex(i):closestIndex(i)+90/1000*maxReadingTime(i)) - rawEyeTracking_Time(closestIndex(i));
+    EyeTracking_X(:,i) = rawEyeTracking_X(closestIndex(i):closestIndex(i)+90/1000*maxReadingTime);
+    EyeTracking_Y(:,i) = rawEyeTracking_Y(closestIndex(i):closestIndex(i)+90/1000*maxReadingTime);
+    EyeTracking_Time(:,i) = rawEyeTracking_Time(closestIndex(i):closestIndex(i)+90/1000*maxReadingTime) - rawEyeTracking_Time(closestIndex(i));
     
     B = EyeTracking_Time;
     [minValue2, closestIndex2] = min(abs(B-maxReadingTime'));
@@ -69,7 +73,7 @@ for i = 1:length(closestIndex)
 %figure 1: X-time
     figure(1)
     hold on
-    plot(EyeTracking_Time(:,i), EyeTracking_X(:,i))
+    plot(EyeTracking_Time(:,i), EyeTracking_X(:,i),'Color',color(i))
     title("X-Time Plot")
     xlabel("Time (s)")
     ylabel("Horizontal Distance (degrees)")
@@ -84,11 +88,10 @@ for i = 1:length(closestIndex)
     hold off
 %figure 2: X-Y
     figure(2)
-    imshow(img);
     hold on
 %comment out EITHER plot(...) or scatter(...) to include lines or not between points
-    %plot(EyeTracking_X(1:max(closestIndex2),i), EyeTracking_Y(1:max(closestIndex2),i), "LineWidth", 2, "Marker", '.', "MarkerSize", 20)
-    scatter(EyeTracking_X(1:max(closestIndex2),i), EyeTracking_Y(1:max(closestIndex2),i), 30, "Marker", '.')
+    %plot(EyeTracking_X(1:max(closestIndex2),i), EyeTracking_Y(1:max(closestIndex2),i), "LineWidth", 2, "Marker", '.', "MarkerSize", 20,'Color',color)
+    scatter(EyeTracking_X(1:max(closestIndex2),i), EyeTracking_Y(1:max(closestIndex2),i), 30, "Marker", '.', 'Color',color(i))
     title("X-Y Plot")
     set(gca, 'YDir','reverse')
     xlabel("Horizontal Eccentricity (degrees)")
@@ -105,7 +108,7 @@ for i = 1:length(closestIndex)
 %figure 3: Y-time
     figure(3)
     hold on
-    plot(EyeTracking_Time(:,i), EyeTracking_Y(:,i))
+    plot(EyeTracking_Time(:,i), EyeTracking_Y(:,i),'Color',color(i))
     set(gca, 'YDir','reverse')
     title("Y-Time Plot")
     xlabel("Time (s)")
