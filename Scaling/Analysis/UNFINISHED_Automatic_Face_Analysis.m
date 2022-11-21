@@ -7,9 +7,6 @@ close all; clear all; clc;
 width_px = 4096;
 height_px = 2160;
 
-width_cm = 121;
-height_cm = 68;
-
 %participant distance
 dist_cm = 121;
 
@@ -28,10 +25,9 @@ imgs = [imread('121cm F1.png'), imread('121cm F2.png'), imread('121cm F3.png'), 
 clear plotData;
 plotData(length(imgs)).eyeTrackingLines = [];
 
+%% test
 
-%% Conversion Factors
-x_deg2px = dist_cm*tand(1) * width_px / width_cm;
-y_deg2px = dist_cm*tand(1) * height_px / height_cm;
+imgs = [imread('121cm F1 1.41deg.png'), imread('121cm F2 1.41deg.png')];
 
 %% Loading and Processing Data from Files
 
@@ -47,9 +43,9 @@ eyeY = atand((eyeData{:,4} - height_px/2) / dist_cm);
 [file, folder] = uigetfile('*.csv');
 RTData = table2array(readtable(fullfile(folder, file)));
 breakPoints = RTData(:,5) / frameRate * 1000 + timeDelay; %finds (arbitrary) CPU 'time' when face appears
-endPoints = breakPoints + RTData(:,4); %finds (arbitrary) 'time' when response
-targets = RTData(:,2);
-heights = RTData(:,3);
+endPoints = breakPoints + RTData(:,3); %finds (arbitrary) 'time' when response
+targets = RTData(:,4);
+heights = RTData(:,2);
 
 %% Processing
 eyeTrackingIndex = 1;
@@ -68,13 +64,13 @@ end
 
 %% Plotting
 for i = 1:length(plotData)
-    plotXY(eyeX, eyeY, plotData(plotIndex(
+    plotXY(eyeX, eyeY, plotData(i));
 end
 
 function index = plotIndex(target, size)
     targetIndex = find([1, 2, 3, -1] == target);
     sizeIndex = find([1,1.3,2] == size);
-    return targetIndex * 11 + sizeIndex - 11;
+    index = targetIndex * 11 + sizeIndex - 11;
 end
 
 function plotXY(eyeX, eyeY, lines, target, size, showLines)
