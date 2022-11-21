@@ -92,7 +92,7 @@ for i = 1:length(closestIndex)
 %comment out EITHER plot(...) or scatter(...) to include lines or not between points
     %plot(EyeTracking_X(1:max(closestIndex2),i), EyeTracking_Y(1:max(closestIndex2),i), "LineWidth", 2, "Marker", '.', "MarkerSize", 20,'Color',color)
     scatter(EyeTracking_X(1:max(closestIndex2),i), EyeTracking_Y(1:max(closestIndex2),i), 30, "Marker", '.', 'Color',color(i))
-    title("X-Y Plot")
+    title("X-Y Plot: "+ face + " degrees")
     set(gca, 'YDir','reverse')
     xlabel("Horizontal Eccentricity (degrees)")
     ylabel("Vertical Eccentricity (degrees)")
