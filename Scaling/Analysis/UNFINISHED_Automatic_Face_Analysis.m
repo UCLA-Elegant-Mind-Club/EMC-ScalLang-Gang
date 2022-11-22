@@ -12,16 +12,13 @@ height_cm = 68;
 %participant distance
 dist_cm = 121;
 
-% face height in degrees
-face = 8;
-
 % frame rate in hz
 frameRate = 90;
 
 % axis label step size for x-y plot
 step = 2;
 
-% overlay image
+% overlay image - use target size 4
 % see plotIndex function at bottom for indexing info of plotData
 imgs = [imread('121cm F1.png'), imread('121cm F2.png'), imread('121cm F3.png'), imread('121cm demo.png')];
 clear plotData;
@@ -76,7 +73,7 @@ function index = plotIndex(target, size)
         plotData(index).target = target;
         plotData(index).size = size;
         plotData(index).index = index;
-        plotData(index).img = imresize(imread(imgs[targetIndex]), size/4 *  height_px
+        plotData(index).img = imresize(imread(imgs[targetIndex]), 1/height_cm * size/4); % use default target size 4
     end
 end
 
@@ -86,7 +83,7 @@ function plotXY(eyeX, eyeY, plotData, showLines)
     title("X-Y Plot for Target " + plotData.target + " (size = " + plotData.size + ")");
     xlabel("Horizontal Eccentricity (degrees)");
     ylabel("Vertical Eccentricity (degrees)");
-    imshow(imgs(index));
+    imshow(plotData.img);
     set(gca, 'color', 'none', 'box','off');
     set(gca, 'YDir','reverse')
     axis on;
