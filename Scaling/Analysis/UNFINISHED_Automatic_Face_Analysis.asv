@@ -17,9 +17,8 @@ step = 2;
 
 % overlay image - use target size 4
 % see plotIndex function at bottom for indexing info of plotData
-clear plotData;
-global plotData, global imgs;
 imgs = ["face 1.png", "face 2.png", "face 3.png", "face demo.png"];
+clear plotData;
 plotData(100).eyeTrackingLines = [];
 plotData(1).target = [];
 
@@ -28,7 +27,7 @@ plotData(1).target = [];
 % Import and reformat raw eye-tracking data from txt file
 [file, folder] = uigetfile('*.txt');
 eyeData = readtable(fullfile(folder, file));
-eyeData = eyeData(~any(ismissing(eyeData).'), :); % Remove NaN rows
+eyeData = eyeData(any(ismissing(eyeData)), :); % Remove NaN rows
 eyeTime = eyeData{:,2}; % CPU uptime in ms
 eyeX = atand((eyeData{:,3} - width_px/2) / width_px * width_cm / dist_cm); %x and y coords are now in angles of eccen
 eyeY = atand((eyeData{:,4} - height_px/2) / height_px * width_cm / dist_cm);
@@ -36,7 +35,7 @@ eyeY = atand((eyeData{:,4} - height_px/2) / height_px * width_cm / dist_cm);
 % Import and reformat RT data from csv file
 [file, folder] = uigetfile('*.csv');
 RTData = table2array(readtable(fullfile(folder, file)));
-breakPoints = RTData(:,5) + 1100; %finds CPU uptime when face appears in ms (1000 ms delay in eyetracker)
+breakPoints = RTData(:,5) + 109; %finds CPU uptime when face appears in ms
 endPoints = breakPoints + RTData(:,3); %finds CPU uptime when response in ms
 targets = RTData(:,4);
 heights = RTData(:,2);
@@ -44,44 +43,31 @@ heights = RTData(:,2);
 %% Processing
 eyeTrackingIndex = 1;
 for trial = 1:height(breakPoints)
-    while eyeTime(eyeTrackingIndex) < breakPoints(trial)
+    if RTData(trial,1) == 0; continue; end %skips incorrect trials
+    while eyeTrackingIndex < breakPoints(trial)
         eyeTrackingIndex = eyeTrackingIndex + 1;
     end
     start = eyeTrackingIndex;
-    while eyeTime(eyeTrackingIndex) < endPoints(trial)
+    while eyeTrackingIndex < endPoints(trial)
         eyeTrackingIndex = eyeTrackingIndex + 1;
     end
-    index = plotIndex(targets(trial), heights(trial), RTData(trial,1));
-    if index > 0
-        plotData(index).eyeTrackingLines = [plotData(index).eyeTrackingLines; [start, eyeTrackingIndex - 1]];
-    end
+    index = plotIndex(targets(trial), heights(trial), plotData);
+    plotData(index).eyeTrackingLines = [plotData(index).eyeTrackingLines; [start, eyeTrackingIndex - 1]];
 end
 
 %% Plotting
 for i = 1:length(plotData)
-    if ~isempty(plotData(i).target)
-        plotXY(eyeX, eyeY, plotData(i), false);
-        %plotXTime(eyeX, eyeYime, plotData(i));
-        %plotYTime(eyeY, eyeTime, plotData(i));
-    end
+    plotXY(eyeX, eyeY, plotData(i), false);
+    %plotXTime(eyeX, eyeYime, plotData(i));
+    %plotYTime(eyeY, eyeTime, plotData(i));
 end
 
 %% Functions
-function index = plotIndex(target, size, correct)
-    if nargin < 3; correct = 1; end
-    global plotData, global imgs;
-    targets = [1,2,3];
-    sizes = [1, 1.41, 2, 2.83, 4, 5.66, 8, 11.31, 16, 21.17, 28];
-    targetIndex = find(targets == target);
-    sizeIndex = find(sizes == size);
-
-    if target == -1; index = -1; targetIndex = 1 + length(targets); % Demo img currently disabled idk where
-    elseif correct == 420.69; index = targetIndex + 1;
-    elseif correct == 0; index = -1;
-    else; index = 1 + length(targets) + (targetIndex-1) * length(sizes) + sizeIndex;
-    end
-
-    if index > 0 && isempty(plotData(index).target)
+function index = plotIndex(target, size, plotData)
+    targetIndex = find([1, 2, 3, -1] == target);
+    sizeIndex = find([-1, 1, 1.41, 2, 2.83, 4, 5.66, 8, 11.31, 16, 21.17, 28] == size);
+    index = targetIndex * 11 + sizeIndex - 11;
+    if isempty(plotData(index).target)
         plotData(index).target = target;
         plotData(index).size = size;
         plotData(index).index = index;
@@ -92,18 +78,18 @@ end
 function plotXY(eyeX, eyeY, plotData, showLines)
     if nargin < 5; showLines = false; end
     figure(plotData.index);
+    title("X-Y Plot for Target " + plotData.target + " (size = " + plotData.size + ")");
+    xlabel("Horizontal Eccentricity (degrees)");
+    ylabel("Vertical Eccentricity (degrees)");
     bound = plotData.size/2;
     imshow(plotData.img, 'XData', [-bound bound], 'YData', [-bound bound]);
     set(gca, 'color', 'none', 'box','off');
     set(gca, 'YDir','reverse')
     axis on;
-    title("X-Y Plot for Target " + plotData.target + " (size = " + plotData.size + ")");
-    xlabel("Horizontal Eccentricity (degrees)");
-    ylabel("Vertical Eccentricity (degrees)");
     
     hold on
-    for i = 1:height(plotData.eyeTrackingLines)
-        range = plotData.eyeTrackingLines(i,1):plotData.eyeTrackingLines(i,2);
+    for i = 1:height(plotData.lines)
+        range = plotData.lines(i,1):plotData.lines(i,2);
         if showLines; plot(eyeX(range), eyeY(range), "LineWidth", 2, "Marker", '.', "MarkerSize", 20);
         else; scatter(eyeX(range), eyeY(range), 30, "Marker", '.'); end
     end
