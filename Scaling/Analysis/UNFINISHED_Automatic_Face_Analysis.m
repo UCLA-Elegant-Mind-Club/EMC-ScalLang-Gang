@@ -15,11 +15,10 @@ dist_cm = 121;
 % axis label step size for x-y plot
 step = 2;
 
-% overlay image - use target size 4
 % see plotIndex function at bottom for indexing info of plotData
+% plotData also prepares images
 clear plotData;
-global plotData, global imgs;
-imgs = ["face 1.png", "face 2.png", "face 3.png", "face demo.png"];
+global plotData;
 plotData(100).eyeTrackingLines = [];
 plotData(1).target = [];
 
@@ -69,37 +68,55 @@ end
 %% Functions
 function index = plotIndex(target, size, correct)
     if nargin < 3; correct = 1; end
-    global plotData, global imgs;
     targets = [1,2,3];
     sizes = [1, 1.41, 2, 2.83, 4, 5.66, 8, 11.31, 16, 21.17, 28];
+    imgs = ["face 1.png", "face 2.png", "face 3.png", "face demo.png"];
+
+    global plotData;
     targetIndex = find(targets == target);
     sizeIndex = find(sizes == size);
 
-    if target == -1; index = -1; targetIndex = 1 + length(targets); % Demo img currently disabled idk where
-    elseif correct == 420.69; index = targetIndex + 1;
-    elseif correct == 0; index = -1;
-    else; index = 1 + length(targets) + (targetIndex-1) * length(sizes) + sizeIndex;
+    if target == -1
+        index = -1;
+        targetIndex = 1 + length(targets); % Callib dots currently disabled idk what img
+    elseif correct == 420.69
+        index = targetIndex + 1;
+        sizeIndex = 0;
+    elseif correct == 0
+        index = -1;
+    else
+        index = 1 + length(targets) + (targetIndex-1) * length(sizes) + sizeIndex;
     end
 
     if index > 0 && isempty(plotData(index).target)
         plotData(index).target = target;
+        plotData(index).targetIndex = targetIndex;
         plotData(index).size = size;
-        plotData(index).index = index;
+        plotData(index).sizeIndex = sizeIndex;
         plotData(index).img = imread(imgs(targetIndex));
     end
 end
 
+function prepSubplot(plotData)
+    rows = 2; cols = 3; total = 12; % 11 sizes + 1 trainer
+
+    figNum = floor(plotData.sizeIndex / rows / cols) + 1;
+    figure((plotData.targetIndex - 1) * ceil(total / rows / cols) + figNum);
+    subplot(2, 3, mod(plotData.sizeIndex, rows * cols) + 1, 'Color', 'k');
+end
+
 function plotXY(eyeX, eyeY, plotData, showLines)
     if nargin < 5; showLines = false; end
-    figure(plotData.index);
+    prepSubplot(plotData);
+
     bound = plotData.size/2;
     imshow(plotData.img, 'XData', [-bound bound], 'YData', [-bound bound]);
     set(gca, 'color', 'none', 'box','off');
     set(gca, 'YDir','reverse')
     axis on;
-    title("X-Y Plot for Target " + plotData.target + " (size = " + plotData.size + ")");
-    xlabel("Horizontal Eccentricity (degrees)");
-    ylabel("Vertical Eccentricity (degrees)");
+    title(plotData.size + " degree height");
+    %xlabel("Horizontal Eccentricity (degrees)");
+    %ylabel("Vertical Eccentricity (degrees)");
     
     hold on
     for i = 1:height(plotData.eyeTrackingLines)
