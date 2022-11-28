@@ -14,7 +14,7 @@ height_cm = 68;
 dist_cm = 121;
 
 % face height in degrees
-face = 28;
+face = 8;
 
 % axis label step size for x-y plot
 step = face/4;
