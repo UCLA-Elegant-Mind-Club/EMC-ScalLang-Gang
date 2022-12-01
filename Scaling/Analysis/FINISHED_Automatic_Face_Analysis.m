@@ -93,14 +93,16 @@ function index = plotIndex(target, size, correct)
         plotData(index).targetIndex = targetIndex;
         plotData(index).size = size;
         plotData(index).sizeIndex = sizeIndex;
-        [img, map, alpha] = imread(imgs(targetIndex);
-        plotData(index).img = image(, 'AlphaData', alphachannel);
+        plotData(index).img = imread(imgs(targetIndex));
     end
 end
 
 function prepSubplot(plotData)
-    figure(plotData.targetIndex * 2 - (plotData.sizeIndex < 6));
-    subplot(2, 3, mod(plotData.sizeIndex, 6) + 1);
+    rows = 2; cols = 3; total = 12; % 11 sizes + 1 trainer
+
+    figNum = floor(plotData.sizeIndex / rows / cols) + 1;
+    figure((plotData.targetIndex - 1) * ceil(total / rows / cols) + figNum);
+    subplot(2, 3, mod(plotData.sizeIndex, rows * cols) + 1, 'Color', 'k');
 end
 
 function plotXY(eyeX, eyeY, plotData, showLines)

@@ -70,7 +70,7 @@ function index = plotIndex(target, size, correct)
     if nargin < 3; correct = 1; end
     targets = [1,2,3];
     sizes = [1, 1.41, 2, 2.83, 4, 5.66, 8, 11.31, 16, 21.17, 28];
-    imgs = ["face 1.png", "face 2.png", "face 3.png", "face demo.png"];
+    imgs = ["face 1.png", "face 2.png", "face 3.png", "121cm Dots.png"];
 
     global plotData;
     targetIndex = find(targets == target);
