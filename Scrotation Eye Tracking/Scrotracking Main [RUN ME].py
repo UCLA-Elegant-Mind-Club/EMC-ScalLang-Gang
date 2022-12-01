@@ -3,6 +3,7 @@ from psychopy.sound import Sound
 prefs.hardware['audioLib'] = ['ptb', 'pyo']
 import os, time, csv, re, uuid
 from ScrotrackingTVStimuli import TVStimuli as TV
+from ScrotrackingTVStimuli import *
 from ScrotrackingClasses import *
 from BG_EyeTracking import *
 
