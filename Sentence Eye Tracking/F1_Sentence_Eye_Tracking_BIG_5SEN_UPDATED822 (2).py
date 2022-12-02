@@ -69,6 +69,27 @@ sentences[9].append('It is very quiet inside.')
 sentences[9].append('The hours are very flexible.')
 sentences[9].append('I am being paid very well.')
 
+['I wrote a letter to my grandmother.', \
+'Bravo romeo oscar whiskey november echo.', \
+'The sky is cloudy and gray.', \
+'Delta romeo echo alpha mike yankee.', \
+'A neuron is a type of cell.', \
+'November echo uniform romeo oscar.', \
+'I want to become a doctor.', \
+'Foxtrot oscar lima delta echo romeo.', \
+'There is a dictionary open on the table.', \
+'Tango romeo india bravo alpha lima.', \
+'I want to see the film again.', \
+'India november delta india golf oscar.', \
+'We will eat spaghetti for dinner.', \
+'Lima yankee mike papa hotel.', \
+'I prefer ice cream over cake.', \
+'Delta echo sierra echo romeo tango.', \
+'He used a knife to cut the cake.', \
+'Kilo india tango charlie hotel.', \
+'I got a job as the new librarian.', \
+'Papa yankee tango hotel oscar november.']
+
 
 def upTime():
     t = lib.GetTickCount64()
@@ -184,17 +205,6 @@ def genDisplay(displayInfo):
     languageStyle='LTR',
     depth=0.0)
     return displayText
-
-def showWait(seconds: float = -1, flip: bool = True, timeOnly: bool = True):
-        if flip: win.flip()
-        if seconds < 0:
-            key = event.waitKeys(keyList =['escape'])
-        elif timeOnly:
-            key = event.waitKeys(keyList = ['escape'], maxWait = seconds)
-        else:
-            key = event.waitKeys(keyList = ['escape'], maxWait = seconds)
-        if key != None and key[0] == 'escape':
-            core.quit()
     
 def displaceCalc(angle):
     angleRad = np.deg2rad(angle)
@@ -217,18 +227,24 @@ Circle = psychopy.visual.Circle(
     size = radius
 )    
 Circle.contrast = 1
+#grating = psychopy.visual.GratingStim(
+#    win=win,
+#    units="cm",
+#    size = radius
+#)    
+#grating.sf = 5/radius
+#grating.contrast = 1
+#grating.mask = 'circle'
 
 def instructions():
     genDisplay({'text': 'You will be presented with a set of sentences',\
-        'xPos': 0, 'yPos': centerY+4, 'heightCm': 1, 'color': 'white'}).draw()
+        'xPos': 0, 'yPos': centerY+6, 'heightCm': 3, 'color': 'white'}).draw()
     genDisplay({'text': 'Read each sentence completely.',\
-        'xPos': 0, 'yPos': centerY+2, 'heightCm': 1, 'color': 'white'}).draw()
+        'xPos': 0, 'yPos': centerY+2,'heightCm': 3, 'color': 'white'}).draw()
     genDisplay({'text': 'Press the spacebar after reading all sentences.',\
-        'xPos': 0, 'yPos': centerY,'heightCm': 1, 'color': 'white'}).draw()
-    genDisplay({'text': 'You will be tested at the end.',\
-        'xPos': 0, 'yPos': centerY-2,'heightCm': 1, 'color': 'white'}).draw()
+        'xPos': 0, 'yPos': centerY-2,'heightCm': 3, 'color': 'white'}).draw()
     genDisplay({'text': 'Press the spacebar to continue',\
-        'xPos': 0, 'yPos': centerY-4,'heightCm': 1, 'color': 'white'}).draw()
+        'xPos': 0, 'yPos': centerY-8,'heightCm': 3, 'color': 'white'}).draw()
     win.flip()
     keyy = event.waitKeys(keyList = ['space', 'escape']) 
     if keyy[0] == 'escape': 
@@ -238,12 +254,12 @@ def instructions():
         core.quit()
 
 def instructions2():
-    genDisplay({'text': 'You will see a white dot on the screen.',\
-        'xPos': 0, 'yPos': centerY+4, 'heightCm': 2, 'color': 'white'}).draw()
-    genDisplay({'text': 'Look at it until it disappears.',\
-        'xPos': 0, 'yPos': centerY, 'heightCm': 2, 'color': 'white'}).draw()
+    genDisplay({'text': 'You will see a white dot around the screen.',\
+        'xPos': 0, 'yPos': centerY+4, 'heightCm': 3, 'color': 'white'}).draw()
+    genDisplay({'text': 'When it appears, look at it until it disappears.',\
+        'xPos': 0, 'yPos': centerY, 'heightCm': 3, 'color': 'white'}).draw()
     genDisplay({'text': 'Press the space bar to begin.',\
-        'xPos': 0, 'yPos': centerY-4,'heightCm': 2, 'color': 'white'}).draw()
+        'xPos': 0, 'yPos': centerY-4,'heightCm': 3, 'color': 'white'}).draw()
     win.flip()
     keyy = event.waitKeys(keyList = ['space', 'escape']) 
     if keyy[0] == 'escape': 
@@ -307,7 +323,7 @@ def calibPeriod(xCoord, yCoord, dotNum):
         yPos = centerY + displaceCalc(20)
     elif yCoord ==0:
         yPos = centerY
-    genDisplay({'text': 'Press space bar to continue.',\
+    genDisplay({'text': 'Press spacebar to continue.',\
         'xPos': xPos, 'yPos': yPos+2, 'heightCm': 1.5*heightMult, 'color': 'white'}).draw()
     win.flip()
     keys = event.waitKeys(keyList = ['space', 'escape'])
@@ -329,59 +345,15 @@ def calibPeriod(xCoord, yCoord, dotNum):
     output = (xCoord, yCoord, startTime, endTime)
     csvOutput(output, fileName2)
 
-def instructions3():
-    genDisplay({'text': 'You will now be presented with a set of questions',\
-        'xPos': 0, 'yPos': centerY+4, 'heightCm': 1, 'color': 'white'}).draw()
-    genDisplay({'text': 'Choose the correct answer.',\
-        'xPos': 0, 'yPos': centerY+2, 'heightCm': 1, 'color': 'white'}).draw()
-    genDisplay({'text': 'Press the key "A" for "yes" and "B" for "no".',\
-        'xPos': 0, 'yPos': centerY, 'heightCm': 1, 'color': 'white'}).draw()
-    genDisplay({'text': 'Press the spacebar to continue',\
-        'xPos': 0, 'yPos': centerY-2,'heightCm': 1, 'color': 'white'}).draw()
-    win.flip()
-    keyy = event.waitKeys(keyList = ['space', 'escape']) 
-    if keyy[0] == 'escape': 
-        win.flip()
-        logging.flush()
-        win.close()
-        core.quit()
-
-def quiz():
-    genDisplay({'text': 'Does the grandmother live abroad?',\
-        'xPos': 0, 'yPos': centerY+4, 'heightCm': 1, 'color': 'white'}).draw()
-    showWait(keys = 'a')
-    genDisplay({'text': 'Is the medical school application due in December?',\
-        'xPos': 0, 'yPos': centerY+2, 'heightCm': 1, 'color': 'white'}).draw()
-    showWait(keys = 'b')
-    genDisplay({'text': 'Was the sky sunny?',\
-        'xPos': 0, 'yPos': centerY,'heightCm': 1, 'color': 'white'}).draw()
-    showWait(keys = 'b')
-    genDisplay({'text': 'Was the word highlighted in the dictionary "flamingo"?',\
-        'xPos': 0, 'yPos': centerY-2,'heightCm': 1, 'color': 'white'}).draw()
-    showWait(keys = 'b')
-    genDisplay({'text': 'Does the librarian like the smell of old books?',\
-        'xPos': 0, 'yPos': centerY-4,'heightCm': 1, 'color': 'white'}).draw()
-    showWait(keys = 'a')
-    win.flip()
-    keyy = event.waitKeys(keyList = ['space', 'escape']) 
-    if keyy[0] == 'escape': 
-        win.flip()
-        logging.flush()
-        win.close()
-        core.quit()
-
-
 instructions2()
 
 calibPeriod(0, 0, 1)
 
 instructions()
 
-#pairs = genPairs()
+pairs = genPairs()
 
-instructions3()
 
-quiz()
 
 #correct = 0
 #incorrect = 1
@@ -503,5 +475,4 @@ if mistakes > 0:
         
 strmistakes = str(mistakes)
 print(strmistakes + ' mistakes')
-
 endExp()
