@@ -14,7 +14,7 @@ height_cm = width_cm * height_px / width_px;
 dist_cm = 121;
 
 % Eye tracker delay in ms (includes monitor delay)
-eyeTrackDelay = 1100;
+eyeTrackDelay = 0;
 
 % see plotIndex function at bottom for indexing info of plotData
 % plotData also prepares images
@@ -60,11 +60,17 @@ end
 %% Plotting
 for i = 1:length(plotData)
     if ~isempty(plotData(i).target)
-        plotXY(eyeX, eyeY, plotData(i), false);
-        %plotXTime(eyeX, eyeTime, plotData(i));
+        %plotXY(eyeX, eyeY, plotData(i), false);
+        plotXTime(eyeX, eyeTime, plotData(i));
         %plotYTime(eyeY, eyeTime, plotData(i));
     end
 end
+
+%%% MAIN CODE STOPS HERE %%%
+%%% MAIN CODE STOPS HERE %%%
+%%% MAIN CODE STOPS HERE %%%
+%%% MAIN CODE STOPS HERE %%%
+%%% MAIN CODE STOPS HERE %%%
 
 %% Functions
 function index = plotIndex(target, size, correct)
@@ -150,7 +156,8 @@ function plotXTime(eyeX, eyeTime, plotData)
         range = plotData.eyeTrackingLines(i,1):plotData.eyeTrackingLines(i,2);
         plot(eyeTime(range) - startTime, eyeX(range));
     end
-    axis([0, inf, -plotData.size/2, plotData.size/2]) % Automatically rescales x-axis: Time, in ms
+    bound = plotData.size/2 / height(plotData.img) * width(plotData.img);
+    axis([0, inf, -bound, bound]) % Automatically rescales x-axis: Time, in ms
 end
 
 function plotYTime(eyeY, eyeTime, plotData)
@@ -167,6 +174,5 @@ function plotYTime(eyeY, eyeTime, plotData)
         range = plotData.eyeTrackingLines(i,1):plotData.eyeTrackingLines(i,2);
         plot(eyeTime(range) - startTime, eyeY(range));
     end
-    bound = plotData.size/2 / height(plotData.img) * width(plotData.img);
-    axis([0, inf, -bound, bound]) % Automatically rescales x-axis: Time, in ms
+    axis([0, inf, -plotData.size/2, plotData.size/2]) % Automatically rescales x-axis: Time, in ms
 end
